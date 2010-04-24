@@ -1,17 +1,16 @@
-Sanitizer
-=========
+== Sanitizer
 
-Simple plugin to sanitize particular field from your models.
+Simple plugin to sanitize particular fields from your models.
 
 To install it as a plugin 
 
   script/plugin install git://github.com/Voxdei/sanitizer.git
+or 
   rails plugin install git://github.com/Voxdei/sanitizer.git
 
 TODO : Add tests
 
-Example
-=======
+== Example
 
 Let's say you have a model Post with an attribute "content" and this attribute could contain information you don't want to display. Like removing <script> tags.
 
