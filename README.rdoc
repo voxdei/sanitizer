@@ -5,8 +5,8 @@ Simple plugin to sanitize particular field from your models.
 
 To install it as a plugin 
 
-  script/plugin install https://Voxdei@github.com/Voxdei/sanitizer.git
-  rails plugin install https://Voxdei@github.com/Voxdei/sanitizer.git
+  script/plugin install git://github.com/Voxdei/sanitizer.git
+  rails plugin install git://github.com/Voxdei/sanitizer.git
 
 TODO : Add tests
 
