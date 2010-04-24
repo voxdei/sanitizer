@@ -12,18 +12,18 @@ TODO : Add tests
 
 == Example
 
-Let's say you have a model Post with an attribute "content" and this attribute could contain information you don't want to display. Like removing <script> tags.
+Let's say you have a model Post with an attribute "content" which contains information you don't want to display (<script> tags for example).
 
-Then you could "sanitize" it using the following line
+Then you can "sanitize" by doing :
 
   class Post
-    sanitize_the :content, /<[^>]*script[^>]*>/
+    sanitize_the :content, /<[^>]*script[^>]*>/ # will remove the tags only, not the code inside
   end
 
-This would create a method
+This will create a method 
+
+  @my_post_instance.sanitized_content
   
-  @post.sanitized_content
-  
-which would sanitize your content following your regex.
+which will return you a string sanitized by your regex.
 
 Copyright (c) 2010 Guillaume Petit, released under the MIT license
