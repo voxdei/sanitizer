@@ -17,7 +17,7 @@ Let's say you have a model Post with an attribute "content" which contains infor
 Then you can "sanitize" by doing :
 
   class Post
-    sanitize_the :content, /<[^>]*script[^>]*>/ # will remove the tags only, not the code inside
+    sanitize_the :content, /<script[^>]*>|<\/script>/ # will remove the tags only, not the code inside
   end
 
 This will create a method 
