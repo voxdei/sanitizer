@@ -1,29 +1,62 @@
 == Sanitizer
 
-Simple plugin to sanitize particular fields from your models.
+Simple plugin to sanitize methods outputs. You have two types of behaviours. The first one is to create a new method wrapping your original method, the second one is to replace the original method.
+
+Don't worry, everything changed can be reverted anytime.
+
+Let's take a look at some example
+
+== Example
+
+Let say you have a class like this
+
+  class Post
+    def content
+      "My content with some nasty script tag <script language="text/javascript">alert("I am nasty!");</script>"
+    end
+  end
+
+Now if you want to remove the script tags you can do
+
+  Post.sanitize :content, /<script[^>]*>|<\/script>/
+  
+You will now have a new public method call "sanitized_content" that will call you "content" method and clean it following your regex. In this case, you will have
+
+  post = Post.new
+  post.sanitized_content # => "My content with some nasty script tag alert("I am nasty!");"
+  
+Now let's talk about the other way, replacing the original method. To do so, simply add a params :override at true
+
+  Post.sanitize :content, /<script[^>]*>|<\/script>/, :override => true
+  
+You won't have a method call "sanitized_content" in this case! This will replace you method "content" by a new one. But don't worry, your former is kept safe. If you wish to restore your class to its former state simple call on one of you instance
+
+  Post.sanitize :content, /<script[^>]*>|<\/script>/, :override => true
+  post = Post.new
+  post.content # => "My content with some nasty script tag alert("I am nasty!");"
+  post.respond_to?(:sanitized_content) # => false
+  post.remove_sanitized_method
+  post.content # => "My content with some nasty script tag <script language="text/javascript">alert("I am nasty!");</script>"
+
+Yes but what if you want to substitute the matches of the regex by something else instead of removing them ? Well then you can add another attribute :substitution.
+
+  Post.sanitize :content, /<script[^>]*>|<\/script>/, :override => true, :substitution => "[NASTY CONTENT]"
+  post = Post.new
+  post.content # => "My content with some nasty script tag [NASTY CONTENT]alert("I am nasty!");[NASTY CONTENT]"
+
+== Installation
+
+Pick the good one depending on your rails version
 
 To install it as a plugin 
-
   script/plugin install git://github.com/Voxdei/sanitizer.git
 or 
   rails plugin install git://github.com/Voxdei/sanitizer.git
 
+== Tests
+
 Yeah ! It's now fully tested ! ... at least I hope so :-D
 
-== Example
-
-Let's say you have a model Post with an attribute "content" which contains information you don't want to display (<script> tags for example).
-
-Then you can "sanitize" by doing :
-
-  class Post
-    sanitize_the :content, /<script[^>]*>|<\/script>/ # will remove the tags only, not the code inside
-  end
-
-This will create a method 
-
-  @my_post_instance.sanitized_content
-  
-which will return you a string sanitized by your regex.
+== The end
 
 Copyright (c) 2010 Guillaume Petit, released under the MIT license

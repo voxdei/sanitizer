@@ -40,7 +40,7 @@ module Sanitizer
     #
     # this would create a sanatized_content method which would remove everything found matching the regex
     #
-    def sanitize_this(attribute, regex, options={})
+    def sanitize_this(attribute, regex=/.*/, options={})
       options = {
         :override     => false,  # replace original method
         :substitution => ""     # what is the substitution for the regex
@@ -54,7 +54,7 @@ module Sanitizer
         
         send :define_method, attribute do
           # new we call the old method within the new one we created and apply our sanitizing process
-          @@old_methods[attribute].bind(self).call.gsub(regex, options[:substitution])
+          regex == /.*/ ? options[:substitution] : @@old_methods[attribute].bind(self).call.gsub(regex, options[:substitution])
         end
       else
         # we are not replacing the old method, therefore we create a new one
