@@ -8,42 +8,15 @@ module Sanitizer
     
   end
   
-  module InstanceMethods
-    
-    def remove_sanitized_methods
-      public_methods(false).find_all do |item|
-        item =~ /sanitized_.*/
-      end.each do |method|
-        # now we need to remove them all
-        self.class.remove_sanitized_method method.to_sym
-      end
-      
-      # now we need to restore the old methods
-      self.class.restore_old_methods
-    end
-    
-  end
-  
   module ClassMethods
     
     @@old_methods = {}
     
-    # simple sanitizer
-    # in your class you would for example say
-    #
-    #   sanitize :content, /<script[^>]*>|<\/script>/
-    #   sanitize :content, /<script[^>]*>|<\/script>/
-    #   sanitize :content, /<script[^>]*>|<\/script>/
-    #   sanitize :content, /<script[^>]*>|<\/script>/
-    #
-    #
-    #
-    # this would create a sanatized_content method which would remove everything found matching the regex
-    #
     def sanitize_this(attribute, regex=/.*/, options={})
       options = {
-        :override     => false,  # replace original method
-        :substitution => ""     # what is the substitution for the regex
+        :override     => false,       # replace original method
+        :substitution => "",          # what is the substitution for the regex
+        :method_root  => "sanitized_" # TODO : adds test for this params
       }.merge(options)
       
       attribute = attribute.to_sym
@@ -58,8 +31,8 @@ module Sanitizer
         end
       else
         # we are not replacing the old method, therefore we create a new one
-        # called "sanitized_ATTRIBUTE"
-        method_name = ("sanitized_" + attribute.to_s).to_sym
+        # called "METHOD_ROOT_ATTRIBUTE"
+        method_name = (options[:method_root] + attribute.to_s).to_sym
         send :define_method, method_name do
           send(attribute).gsub(regex, options[:substitution])
         end
@@ -82,39 +55,21 @@ module Sanitizer
       end
     end
     
+    def remove_sanitized_methods
+      instance_methods(false).find_all do |item|
+        item =~ /sanitized_.*/
+      end.each do |method|
+        # now we need to remove them all
+        remove_method method.to_sym
+      end
+      
+      # now we need to restore the old methods
+      restore_old_methods
+    end
+    
   end
   
 end
 
 # loading it up
 Object.send(:include, Sanitizer)
-
-class Object
-  include Sanitizer::InstanceMethods
-end
-# Done loading it
-
-
-if __FILE__ == $0
-  class Testo
-    
-    def blop
-      result = "Omaga BLOP"
-      p "Call inside old method [blop]"
-      result
-    end
-    
-    sanitize_this :blop, /BL/, :override => false
-    
-  end
-  
-  testo = Testo.new
-  p testo.public_methods(false)
-  testo.remove_sanitized_methods
-  p testo.public_methods(false)
-  
-  #p testo.public_methods(false).join(', ')
-  
-  #p testo.blop
-  
-end

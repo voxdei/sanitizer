@@ -29,13 +29,13 @@ Now let's talk about the other way, replacing the original method. To do so, sim
 
   Post.sanitize :content, /<script[^>]*>|<\/script>/, :override => true
   
-You won't have a method call "sanitized_content" in this case! This will replace you method "content" by a new one. But don't worry, your former is kept safe. If you wish to restore your class to its former state simple call on one of you instance
+You won't have a method call "sanitized_content" in this case! This will replace you method "content" by a new one. But don't worry, your former is kept safe. If you wish to restore your class to its former state simply call the singleton method "remove_sanitized_method" on your class.
 
   Post.sanitize :content, /<script[^>]*>|<\/script>/, :override => true
   post = Post.new
   post.content # => "Content with some nasty script tag alert("I am nasty!");"
   post.respond_to?(:sanitized_content) # => false
-  post.remove_sanitized_method
+  Post.remove_sanitized_method # removing all added methods and restore original ones
   post.content # => "Content with some nasty script tag <script language="text/javascript">alert("I am nasty!");</script>"
 
 Yes but what if you want to substitute the matches of the regex by something else instead of removing them ? Well then you can add another attribute :substitution.

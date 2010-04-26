@@ -1,30 +1,28 @@
 require 'test_helper'
 
 class Bot
-  
   def name
     "My name is BOT"
   end
-  
 end
 
 class SanitizerTest < ActiveSupport::TestCase
   
   def setup
     @bot = Bot.new
-    @bot.remove_sanitized_methods
+    Bot.remove_sanitized_methods
   end
   
   test "removing all the add methods" do
-    Bot.sanitize_the :name, /BOT/
-    Bot.sanitize_the :name2, //
-    Bot.sanitize_the :name3, //
+    Bot.sanitize_the :name
+    Bot.sanitize_the :name2
+    Bot.sanitize_the :name3
     
     assert @bot.respond_to?("sanitized_name")
     assert @bot.respond_to?("sanitized_name2")
     assert @bot.respond_to?("sanitized_name3")
     
-    @bot.remove_sanitized_methods
+    Bot.remove_sanitized_methods
     
     assert !@bot.respond_to?("sanitized_name")  
     assert !@bot.respond_to?("sanitized_name2")  
@@ -40,7 +38,7 @@ class SanitizerTest < ActiveSupport::TestCase
     assert_equal @bot.name, "My name is "
     
     # we restore it back to its former state
-    @bot.remove_sanitized_methods
+    Bot.remove_sanitized_methods
     assert_equal @bot.name, "My name is BOT"
   end
   
@@ -88,7 +86,7 @@ class SanitizerTest < ActiveSupport::TestCase
     assert_equal @bot.name, "My name is BOT" # we are overriding the former method, so the current name method returns "My name is BOT"
     
     # back to origin
-    @bot.remove_sanitized_methods
+    Bot.remove_sanitized_methods
     assert_equal @bot.name, "My name is BOT"
   end
   
