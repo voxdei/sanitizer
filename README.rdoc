@@ -8,7 +8,7 @@ To install it as a plugin
 or 
   rails plugin install git://github.com/Voxdei/sanitizer.git
 
-TODO : Add tests
+Yeah ! It's now fully tested ! ... at least I hope so :-D
 
 == Example
 
