@@ -16,7 +16,7 @@ Let say you have a class like this
     end
   end
 
-Now if you want to remove the script tags you can do
+Now if you want to remove the script tags (not what's inside !!) you can do
 
   Post.sanitize :content, /<script[^>]*>|<\/script>/
   
