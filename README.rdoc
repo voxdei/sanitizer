@@ -49,9 +49,9 @@ Yes but what if you want to substitute the matches of the regex by something els
 Pick the good one depending on your rails version
 
 To install it as a plugin 
-  script/plugin install git://github.com/Voxdei/sanitizer.git
+  script/plugin install git://github.com/voxdei/sanitizer.git
 or 
-  rails plugin install git://github.com/Voxdei/sanitizer.git
+  rails plugin install git://github.com/voxdei/sanitizer.git
 
 == Tests
 
