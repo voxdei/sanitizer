@@ -20,7 +20,7 @@ Now if you want to remove the script tags (not what's inside !!) you can do
 
   Post.sanitize :content, /<script[^>]*>|<\/script>/
   
-You will now have a new public method call "sanitized_content" that will call you "content" method and clean it following your regex. In this case, you will have
+You will now have a new public instance method call "sanitized_content" that will call your "content" method and clean its output following your regex. In this case, you will have
 
   post = Post.new
   post.sanitized_content # => "Content with some nasty script tag alert("I am nasty!");"
