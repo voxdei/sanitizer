@@ -18,7 +18,7 @@ Let say you have a class like this
 
 Now if you want to remove the script tags (not what's inside !!) you can do
 
-  Post.sanitize :content, /<script[^>]*>|<\/script>/
+  Post.sanitize_the :content, /<script[^>]*>|<\/script>/
   
 You will now have a new public instance method call "sanitized_content" that will call your "content" method and clean its output following your regex. In this case, you will have
 
@@ -27,20 +27,20 @@ You will now have a new public instance method call "sanitized_content" that wil
   
 Now let's talk about the other way, replacing the original method. To do so, simply add a params :override at true
 
-  Post.sanitize :content, /<script[^>]*>|<\/script>/, :override => true
+  Post.sanitize_the :content, /<script[^>]*>|<\/script>/, :override => true
   
 You won't have a method call "sanitized_content" in this case! This will replace you method "content" by a new one. But don't worry, your former is kept safe. If you wish to restore your class to its former state simply call the singleton method "remove_sanitized_method" on your class.
 
-  Post.sanitize :content, /<script[^>]*>|<\/script>/, :override => true
+  Post.sanitize_the :content, /<script[^>]*>|<\/script>/, :override => true
   post = Post.new
   post.content # => "Content with some nasty script tag alert("I am nasty!");"
   post.respond_to?(:sanitized_content) # => false
-  Post.remove_sanitized_method # removing all added methods and restore original ones
+  Post.remove_sanitized_methods # removing all added methods and restore original ones
   post.content # => "Content with some nasty script tag <script language="text/javascript">alert("I am nasty!");</script>"
 
 Yes but what if you want to substitute the matches of the regex by something else instead of removing them ? Well then you can add another attribute :substitution.
 
-  Post.sanitize :content, /<script[^>]*>|<\/script>/, :override => true, :substitution => "[NASTY CONTENT]"
+  Post.sanitize_the :content, /<script[^>]*>|<\/script>/, :override => true, :substitution => "[NASTY CONTENT]"
   post = Post.new
   post.content # => "Content with some nasty script tag [NASTY CONTENT]alert("I am nasty!");[NASTY CONTENT]"
 
@@ -55,7 +55,7 @@ or
 
 == Tests
 
-Yeah ! It's now fully tested ! ... at least I hope so :-D
+Yeah ! It's now fully tested !
 
 == The end
 
